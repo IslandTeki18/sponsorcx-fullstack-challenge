@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import connectDB from "./src/config/db.ts";
 
 import organizationRoutes from "./src/routes/organization.routes.ts"
+import accountRoutes from "./src/routes/account.routes.ts"
 
 dotenv.config();
 connectDB();
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/organizations", organizationRoutes);
+app.use("/api/accounts", accountRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");
