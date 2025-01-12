@@ -5,14 +5,23 @@ import { Deal } from "../types/Deal";
 export const useDeals = () => {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const fetchDeals = async () => {
       try {
         const data = await getDeals();
-        setDeals(data);
-      } catch (error) {
-        console.error("Error fetching deals:", error);
+        const transformedDeals = data.map((deal) => ({
+          ...deal,
+          startDate: new Date(deal.startDate),
+          endDate: new Date(deal.endDate),
+        }));
+        setDeals(transformedDeals);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err : new Error("Failed to fetch deals")
+        );
+        console.error("Error fetching deals:", err);
       } finally {
         setLoading(false);
       }
@@ -21,5 +30,5 @@ export const useDeals = () => {
     fetchDeals();
   }, []);
 
-  return { deals, loading };
+  return { deals, loading, error };
 };
